@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { catchError, map, Observable, of, startWith } from 'rxjs';
+import { NgForm } from '@angular/forms';
+import { BehaviorSubject, catchError, map, Observable, of, startWith } from 'rxjs';
 import { DataState } from './enum/data-state.enum';
 import { AppState } from './interface/app-state';
 import { CommonResponse } from './interface/common-response';
+import { Team } from './interface/team';
+import { NotificationService } from './service/notification.service';
 import { TeamService } from './service/team.service';
 
 @Component({
@@ -12,7 +15,13 @@ import { TeamService } from './service/team.service';
 })
 export class AppComponent implements OnInit {
   appState$!: Observable<AppState<CommonResponse>>;
-  constructor(private teamService: TeamService) { }
+  readonly DataState = DataState;
+  private isLoading = new BehaviorSubject<boolean>(false);
+  isLoading$ = this.isLoading.asObservable();
+  dataSubject: any;
+
+  constructor(private teamService: TeamService, private notifier: NotificationService) { }
+
 
   ngOnInit(): void {
     this.appState$ = this.teamService.teams$
@@ -27,4 +36,48 @@ export class AppComponent implements OnInit {
       );
   }
 
+  saveTeam(teamForm: NgForm): void {
+    this.isLoading.next(true);
+    this.appState$ = this.teamService.save$(teamForm.value as Team)
+      .pipe(
+        map(response => {
+          this.dataSubject.next(
+            { ...response, data: { servers: [response.data.team, ...this.dataSubject.value.data.servers] } }
+          );
+          this.notifier.onDefault(response.message);
+          //document.getElementById('closeModal').click();
+          this.isLoading.next(false);
+          return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
+        }),
+        startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
+        catchError((error: string) => {
+          this.isLoading.next(false);
+          this.notifier.onError(error);
+          return of({ dataState: DataState.ERROR_STATE, error });
+        })
+      );
+  }
+
+  deleteTeam(team: Team): void {
+    this.appState$ = this.teamService.delete$(team.id)
+      .pipe(
+        map(response => {
+          this.dataSubject.next(
+            {
+              ...response, data:
+                { servers: this.dataSubject.value.data.teams.filter((s: { id: number; }) => s.id !== team.id) }
+            }
+          );
+          this.notifier.onDefault(response.message);
+          return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
+        }),
+        startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
+        catchError((error: string) => {
+          this.notifier.onError(error);
+          return of({ dataState: DataState.ERROR_STATE, error });
+        })
+      );
+  }
+
 }
+
