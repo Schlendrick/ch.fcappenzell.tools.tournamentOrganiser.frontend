@@ -27,10 +27,13 @@ export class AppComponent implements OnInit {
     this.appState$ = this.teamService.teams$
       .pipe(
         map(response => {
+          this.notifier.onDefault(response.message);
+          this.dataSubject.next(response);
           return { dataState: DataState.LOADED_STATE, appData: response }
         }),
         startWith({ dataState: DataState.LOADING_STATE }),
         catchError((error: string) => {
+          this.notifier.onError(error);
           return of({ dataState: DataState.ERROR_STATE, error: error })
         })
       );
@@ -45,7 +48,7 @@ export class AppComponent implements OnInit {
             { ...response, data: { teams: [response.data.team!, ...this.dataSubject.value.data.teams!] } }
           );
           this.notifier.onDefault(response.message);
-          //document.getElementById('closeModal').click();
+          document.getElementById('closeModal')!.click();
           this.isLoading.next(false);
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
         }),
