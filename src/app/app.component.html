@@ -28,6 +28,11 @@
                                 <th>Id</th>
                                 <th>Name</th>
                                 <th>Category</th>
+                                <th>Title</th>
+                                <th>Captain</th>
+                                <th>Street</th>
+                                <th>PLZ</th>
+                                <th>Place</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -36,6 +41,11 @@
                                 <td>{{ team.id }}</td>
                                 <td>{{ team.name }}</td>
                                 <td>{{ team.category }}</td>
+                                <td>{{ team.captain.title }}</td>
+                                <td>{{ team.captain.lastName }} {{ team.captain.firstName }}</td>
+                                <td>{{ team.captain.street }}</td>
+                                <td>{{ team.captain.plz }} </td>
+                                <td>{{ team.captain.place }} </td>
                                 <td>
                                     <a (click)="deleteTeam(team)" class="delete" data-toggle="modal"
                                         style="cursor: pointer;"><i class="material-icons" data-toggle="tooltip"
@@ -60,17 +70,20 @@
         <div class="modal-content">
             <form #teamForm="ngForm" (ngSubmit)="saveTeam(teamForm)">
                 <div class="modal-header">
-                    <h4 class="modal-title">Add Server</h4>
+                    <h4 class="modal-title">Add new team</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>IP</label>
-                        <input type="text" ngModel name="ipAddress" class="form-control" required>
+                        <label>Team Name</label>
+                        <input type="text" ngModel name="name" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" ngModel name="name" class="form-control" required>
+                        <label>Category</label>
+                        <select name="category" ngModel="SERVER_DOWN" class="form-control" name="status" required>
+                            <option value="SERVER_UP">SERVER UP</option>
+                            <option value="SERVER_DOWN">SERVER DOWN</option>
+                        </select>
                     </div>
                     <div class="row">
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
@@ -86,13 +99,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select name="status" ngModel="SERVER_DOWN" class="form-control" name="status" required>
-                            <option value="SERVER_UP">SERVER UP</option>
-                            <option value="SERVER_DOWN">SERVER DOWN</option>
-                        </select>
-                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-warning" id="closeModal" data-dismiss="modal">

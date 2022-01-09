@@ -8,4 +8,5 @@ export interface CommonResponse {
     message: string;
     developerMessage: string;
     data: { teams?: Team[], team?: Team }
+
 }

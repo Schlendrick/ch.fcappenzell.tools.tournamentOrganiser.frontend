@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   readonly DataState = DataState;
   private isLoading = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoading.asObservable();
-  dataSubject: any;
+  private dataSubject = new BehaviorSubject<CommonResponse>(null!);
 
   constructor(private teamService: TeamService, private notifier: NotificationService) { }
 
@@ -42,7 +42,7 @@ export class AppComponent implements OnInit {
       .pipe(
         map(response => {
           this.dataSubject.next(
-            { ...response, data: { servers: [response.data.team, ...this.dataSubject.value.data.servers] } }
+            { ...response, data: { teams: [response.data.team!, ...this.dataSubject.value.data.teams!] } }
           );
           this.notifier.onDefault(response.message);
           //document.getElementById('closeModal').click();
@@ -65,13 +65,13 @@ export class AppComponent implements OnInit {
           this.dataSubject.next(
             {
               ...response, data:
-                { servers: this.dataSubject.value.data.teams.filter((s: { id: number; }) => s.id !== team.id) }
+                { teams: this.dataSubject.value.data.teams!.filter(s => s.id !== team.id) }
             }
           );
           this.notifier.onDefault(response.message);
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
         }),
-        startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
+        startWith({ dataState: DataState.LOADING_STATE }),
         catchError((error: string) => {
           this.notifier.onError(error);
           return of({ dataState: DataState.ERROR_STATE, error });
