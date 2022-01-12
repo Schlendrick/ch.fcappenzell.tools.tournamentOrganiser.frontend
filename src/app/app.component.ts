@@ -39,9 +39,9 @@ export class AppComponent implements OnInit {
       );
   }
 
-  saveTeam(teamForm: NgForm): void {
+  createTeam(teamForm: NgForm): void {
     this.isLoading.next(true);
-    this.appState$ = this.teamService.save$(teamForm.value as Team)
+    this.appState$ = this.teamService.create$(teamForm.value as Team)
       .pipe(
         map(response => {
           this.dataSubject.next(

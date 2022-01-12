@@ -20,8 +20,15 @@ export class TeamService {
         catchError(this.handleError)
       );
 
-  save$ = (team: Team) => <Observable<CommonResponse>>
-    this.http.post<CommonResponse>(`${this.apiServerUrl}/teams/save`, team)
+  create$ = (team: Team) => <Observable<CommonResponse>>
+    this.http.post<CommonResponse>(`${this.apiServerUrl}/teams/create`, team)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  update$ = (team: Team) => <Observable<CommonResponse>>
+    this.http.post<CommonResponse>(`${this.apiServerUrl}/teams/update`, team)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
@@ -43,7 +50,7 @@ export class TeamService {
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     console.log(error);
-    return throwError(`An error occured - Error code ${error.status}`);
+    return throwError(`An error occured: Error message ${error.message},  Error code: ${error.status}`);
   }
 
 }
