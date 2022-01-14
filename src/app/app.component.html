@@ -50,6 +50,10 @@
                                     <a (click)="deleteTeam(team)" class="delete" data-toggle="modal"
                                         style="cursor: pointer;"><i class="material-icons" data-toggle="tooltip"
                                             title="Delete">&#xE872;</i></a>
+
+                                    <a href="#editTeamModal" class="edit" data-toggle="modal"
+                                    style="cursor: pointer;"><i class="material-icons" data-toggle="tooltip"
+                                        title="Edit">&#xE3c9;</i></a>
                                 </td>
                         </tbody>
                     </table>
@@ -116,4 +120,57 @@
         </div>
     </div>
   </div>
+
+
+<!-- Add server Modal HTML -->
+<div id="editTeamModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form (ngSubmit)="onSubmit()">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit team</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="first-name">First Name: </label>
+                        <input id="first-name" type="text" formControlName="firstName" required class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="last-name">Last Name: </label>
+                        <input id="last-name" type="text" formControlName="lastName" required class="form-control">
+                    </div>
+                    
+                    <div formGroupName="address">
+                        <h2>Address</h2>
+                    
+                        <label for="street">Street: </label>
+                        <input id="street" type="text" formControlName="street" required class="form-control">
+                    
+                        <label for="city">City: </label>
+                        <input id="city" type="text" formControlName="city" required class="form-control">
+                    
+                        <label for="state">State: </label>
+                        <input id="state" type="text" formControlName="state" required class="form-control">
+                    
+                        <label for="zip">Zip Code: </label>
+                        <input id="zip"type="text" formControlName="zip" required class="form-control">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" id="closeModal" data-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-success"(click)="updateTeam()">Update Team</button>
+                </div>
+                </form>
+        </div>
+    </div>
+    </div>
   <notifier-container></notifier-container>
+

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormControl, FormGroup, NgForm } from '@angular/forms';
 import { BehaviorSubject, catchError, map, Observable, of, startWith } from 'rxjs';
 import { DataState } from './enum/data-state.enum';
 import { AppState } from './interface/app-state';
@@ -8,11 +8,13 @@ import { Team } from './interface/team';
 import { NotificationService } from './service/notification.service';
 import { TeamService } from './service/team.service';
 
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent implements OnInit {
   appState$!: Observable<AppState<CommonResponse>>;
   readonly DataState = DataState;
@@ -21,6 +23,26 @@ export class AppComponent implements OnInit {
   private dataSubject = new BehaviorSubject<CommonResponse>(null!);
 
   constructor(private teamService: TeamService, private notifier: NotificationService) { }
+
+  teamForm = new FormGroup({
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
+    address: new FormGroup({
+      street: new FormControl(''),
+      city: new FormControl(''),
+      state: new FormControl(''),
+      zip: new FormControl('')
+    })
+  });
+
+  onSubmit() {
+    // TODO: Use EventEmitter with form value
+    console.warn(this.teamForm.value);
+  }
+
+  updateTeam() {
+
+  }
 
 
   ngOnInit(): void {
