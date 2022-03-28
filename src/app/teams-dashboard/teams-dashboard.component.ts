@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, NgForm } from '@angular/forms';
+import { FormControl, FormBuilder, FormGroup, NgForm } from '@angular/forms';
 import { BehaviorSubject, catchError, map, Observable, of, startWith } from 'rxjs';
 import { TeamService } from '../service/team.service';
 import { DataState } from '../enum/data-state.enum';
@@ -7,6 +7,7 @@ import { AppState } from '../interface/app-state';
 import { CommonResponse } from '../interface/common-response';
 import { Team } from '../interface/team';
 import { NotificationService } from '../service/notification.service';
+import { NotificationModule } from '../notification/notification.module';
 
 
 @Component({
@@ -24,6 +25,17 @@ export class TeamsDashboardComponent implements OnInit {
   private dataSubject = new BehaviorSubject<CommonResponse>(null!);
 
   constructor(private teamService: TeamService, private frombuilder: FormBuilder, private notifier: NotificationService) { }
+
+  teamForm = new FormGroup({
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
+    address: new FormGroup({
+      street: new FormControl(''),
+      city: new FormControl(''),
+      state: new FormControl(''),
+      zip: new FormControl('')
+    })
+  });
 
   ngOnInit(): void {
     this.formValue = this.frombuilder.group({
@@ -49,6 +61,11 @@ export class TeamsDashboardComponent implements OnInit {
           return of({ dataState: DataState.ERROR_STATE, error: error })
         })
       );
+  }
+
+  onSubmit() {
+    // TODO: Use EventEmitter with form value
+    console.warn(this.teamForm.value);
   }
 
   createTeam(teamForm: NgForm): void {
@@ -101,7 +118,6 @@ export class TeamsDashboardComponent implements OnInit {
         })
       );
   }
-
 
   deleteTeam(team: Team): void {
     this.appState$ = this.teamService.delete$(team.id)

@@ -1,182 +1,23 @@
-<nav>
-    <a routerLink="/emailImporter">E-Mail Import</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+      <a class="navbar-brand" >Tournament Organisator</a>
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/manageTeams">Manage Teams</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/emailImporter">E-Mail Import</a>
+        </li>
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
+    </div>
   </nav>
-  <router-outlet></router-outlet>
 
-
-<div class="container-xl">
-    <div class="table-responsive">
-        <div class="table-wrapper">
-            <div class="table-title">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h2>Manage Teams</h2>
-                    </div>
-                    <div class="col-sm-6">
-                        <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal">
-                            <i class="material-icons">&#xE147;</i>
-                            <span>New Team</span>
-                        </a>
-
-                    </div>
-                </div>
-            </div> <br>
-            <ng-container *ngIf="(appState$ | async) as appState" [ngSwitch]="appState.dataState">
-                <ng-container *ngSwitchCase="DataState.LOADING_STATE">
-                    <div class="col-md-12 single-note-item text-center">
-                        <div class="spinner-border text-info" role="status"></div>
-                    </div>
-                </ng-container>
-                <ng-container *ngSwitchCase="DataState.LOADED_STATE">
-                    <table class="table table-striped table-hover" id="servers">
-                        <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Name</th>
-                                <th>Category</th>
-                                <th>Title</th>
-                                <th>Captain</th>
-                                <th>Street</th>
-                                <th>PLZ</th>
-                                <th>Place</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody *ngFor="let team of appState.appData?.data?.teams; let i = index" >
-                            <tr>
-                                <td>{{ team.id }}</td>
-                                <td>{{ team.name }}</td>
-                                <td>{{ team.category }}</td>
-                                <td>{{ team.captain.title }}</td>
-                                <td>{{ team.captain.lastName }} {{ team.captain.firstName }}</td>
-                                <td>{{ team.captain.street }}</td>
-                                <td>{{ team.captain.plz }} </td>
-                                <td>{{ team.captain.place }} </td>
-                                <td>
-                                    <a (click)="deleteTeam(team)" class="delete" data-toggle="modal"
-                                        style="cursor: pointer;"><i class="material-icons" data-toggle="tooltip"
-                                            title="Delete">&#xE872;</i></a>
-
-                                    <a href="#editTeamModal" class="edit" data-toggle="modal"
-                                    style="cursor: pointer;"><i class="material-icons" data-toggle="tooltip"
-                                        title="Edit">&#xE3c9;</i></a>
-                                </td>
-                        </tbody>
-                    </table>
-                </ng-container>
-                <ng-container *ngSwitchCase="DataState.ERROR_STATE">
-                    <div class="alert-danger">
-                        {{ appState.error }}
-                    </div>
-                </ng-container>
-            </ng-container>
-        </div>
-    </div>
-  </div>
-
-  <!-- Add server Modal HTML -->
-  <div id="addEmployeeModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form #teamForm="ngForm" (ngSubmit)="createTeam(teamForm)">
-                <div class="modal-header">
-                    <h4 class="modal-title">Add new team</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Team Name</label>
-                        <input type="text" ngModel name="name" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Category</label>
-                        <select name="category" ngModel="SERVER_DOWN" class="form-control" name="status" required>
-                            <option value="SERVER_UP">SERVER UP</option>
-                            <option value="SERVER_DOWN">SERVER DOWN</option>
-                        </select>
-                    </div>
-                    <div class="row">
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
-                            <div class="form-group">
-                                <label>Memory</label>
-                                <input type="text" ngModel name="memory" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
-                            <div class="form-group">
-                                <label>Type</label>
-                                <input type="text" ngModel name="type" class="form-control" required>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-warning" id="closeModal" data-dismiss="modal">
-                        Cancel
-                    </button>
-                    <button type="submit" [disabled]="teamForm.invalid || (isLoading$ | async)"
-                        class="btn btn-success">
-                        <i *ngIf="isLoading$ | async" class="fas fa-spinner fa-spin"></i>
-                        <span *ngIf="isLoading$ | async">Saving...</span>
-                        <span *ngIf="!(isLoading$ | async)">Add</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-  </div>
-
-
-<!-- Add server Modal HTML -->
-<div id="editTeamModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form (ngSubmit)="onSubmit()">
-
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit team</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="form-group">
-                        <label for="first-name">First Name: </label>
-                        <input id="first-name" type="text" formControlName="firstName" required class="form-control">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="last-name">Last Name: </label>
-                        <input id="last-name" type="text" formControlName="lastName" required class="form-control">
-                    </div>
-                    
-                    <div formGroupName="address">
-                        <h2>Address</h2>
-                    
-                        <label for="street">Street: </label>
-                        <input id="street" type="text" formControlName="street" required class="form-control">
-                    
-                        <label for="city">City: </label>
-                        <input id="city" type="text" formControlName="city" required class="form-control">
-                    
-                        <label for="state">State: </label>
-                        <input id="state" type="text" formControlName="state" required class="form-control">
-                    
-                        <label for="zip">Zip Code: </label>
-                        <input id="zip"type="text" formControlName="zip" required class="form-control">
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-warning" id="closeModal" data-dismiss="modal">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn btn-success"(click)="updateTeam()">Update Team</button>
-                </div>
-                </form>
-        </div>
-    </div>
-    </div>
-  <notifier-container></notifier-container>
+<router-outlet></router-outlet>
 
