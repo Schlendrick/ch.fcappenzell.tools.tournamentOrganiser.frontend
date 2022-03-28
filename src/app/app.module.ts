@@ -6,10 +6,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NotificationModule } from './notification/notification.module';
+import { MailImporterComponent } from './mail-importer/mail-importer.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    MailImporterComponent
   ],
   imports: [
     AppRoutingModule,
