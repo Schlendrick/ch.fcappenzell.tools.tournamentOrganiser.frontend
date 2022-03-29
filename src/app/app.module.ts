@@ -8,12 +8,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NotificationModule } from './notification/notification.module';
 import { MailImporterComponent } from './mail-importer/mail-importer.component';
 import { TeamsDashboardComponent } from './teams-dashboard/teams-dashboard.component';
+import { DndDirective } from './direcitves/dnd.direcitves';
+import { ProgressComponent } from './components/progress/progress.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TeamsDashboardComponent,
-    MailImporterComponent
+    MailImporterComponent,
+    DndDirective,
+    ProgressComponent
   ],
   imports: [
     AppRoutingModule,
