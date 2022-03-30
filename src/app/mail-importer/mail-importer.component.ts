@@ -1,4 +1,5 @@
 import { Component, ViewChild, ElementRef } from "@angular/core";
+import { RTFJS } from "rtf.js";
 
 @Component({
   selector: 'app-mail-importer',
@@ -48,7 +49,18 @@ export class MailImporterComponent {
         const progressInterval = setInterval(() => {
           if (this.files[index].progress === 100) {
             this.files[index].text("UTF-8").then((rtf: any) => {
-              console.log(this.convertToPlain(rtf));
+              const blob = this.stringToArrayBuffer(rtf);
+              RTFJS.loggingEnabled(false);
+              const doc = new RTFJS.Document(blob, rtf);
+              const meta = doc.metadata();
+              doc.render().then(function (htmlElements) {
+                console.log("Meta:");
+                console.log(meta);
+                console.log("Html:");
+                htmlElements.forEach(ele => {
+                  console.log(ele.innerText);
+                })
+              }).catch((error: any) => console.error(error))
             });
             clearInterval(progressInterval);
             this.uploadFilesSimulator(index + 1);
@@ -89,8 +101,12 @@ export class MailImporterComponent {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
   }
 
-  convertToPlain(rtf: string) {
-    rtf = rtf.replace(/\\par[d]?/g, "");
-    return rtf.replace(/\{\*?\\[^{}]+}|[{}]|\\\n?[A-Za-z]+\n?(?:-?\d+)?[ ]?/g, "").trim();
+  stringToArrayBuffer(string: string) {
+    const buffer = new ArrayBuffer(string.length);
+    const bufferView = new Uint8Array(buffer);
+    for (let i = 0; i < string.length; i++) {
+      bufferView[i] = string.charCodeAt(i);
+    }
+    return buffer;
   }
 }
