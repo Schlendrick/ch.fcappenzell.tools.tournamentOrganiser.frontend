@@ -1,5 +1,7 @@
 import { Component, ViewChild, ElementRef } from "@angular/core";
 import { RTFJS } from "rtf.js";
+import { Captain, Player, Team } from "../interface/team";
+import { TeamsDashboardComponent } from "../teams-dashboard/teams-dashboard.component";
 
 @Component({
   selector: 'app-mail-importer',
@@ -58,8 +60,40 @@ export class MailImporterComponent {
                 console.log(meta);
                 console.log("Html:");
                 htmlElements.forEach(ele => {
-                  console.log(ele.innerText);
+                  //console.log(ele.innerText);
                 })
+
+                var team: Team = new Team();
+                team.players = new Array<Player>();
+
+                htmlElements
+                  .forEach((a, index) => {
+                    for (let i = 1; i <= 8; i++) {
+                      if (a.textContent!.includes("Spieler " + i + ":")) {
+                        console.log("Spieler " + i + ":");
+
+                        var player: Player = new Player();
+
+                        if (i == 1) {
+                          index -= 1;
+                          console.log("Name: " + htmlElements[index + 1].innerText.replace(/\u2028/g, '').replace('Spieler 1:Name: ', ''));
+                        } else {
+                          console.log("Name: " + htmlElements[index + 1].innerText.replace('Name: ', ''));
+                          player.firstName = htmlElements[index + 1].innerText.replace('Name: ', '');
+                        }
+                        console.log("Vorname: " + htmlElements[index + 2].innerText.replace('Vorname: ', ''))
+                        player.lastName = htmlElements[index + 2].innerText.replace('Vorname: ', '');
+                        console.log(player);
+                        console.log("Geburtsdatum: " + htmlElements[index + 3].innerText.replace('Geburtsdatum: ', ''))
+                        console.log("Fussballer: " + htmlElements[index + 4].innerText.replace('Fussballer:', '').trim())
+
+                        team.players.push(player);
+
+                      }
+
+                    }
+                  })
+                console.log(team.players);
               }).catch((error: any) => console.error(error))
             });
             clearInterval(progressInterval);
@@ -69,7 +103,7 @@ export class MailImporterComponent {
           }
         }, 200);
       }
-    }, 1000);
+    }, 10);
   }
 
   /**

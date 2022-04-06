@@ -1,13 +1,22 @@
-export interface Team {
+export interface ITeam {
     id: number;
     name: string;
     category: string;
-    captain: Captain;
-    players: Array<Player>;
+    captain: ICaptain;
+    players: Array<IPlayer>;
     uuid: string;
 }
 
-interface Captain {
+export class Team implements ITeam {
+    id!: number;
+    name!: string;
+    category!: string;
+    captain!: ICaptain;
+    players!: Array<IPlayer>;
+    uuid!: string;
+}
+
+export interface ICaptain {
     id: number;
     title: string;
     firstName: string;
@@ -17,14 +26,33 @@ interface Captain {
     place: string;
     email: string;
     phone: string;
+}
+
+export class Captain implements ICaptain {
+    id!: number;
+    title!: string;
+    firstName!: string;
+    lastName!: string;
+    street!: string;
+    plz!: number;
+    place!: string;
+    email!: string;
+    phone!: string;
 
 }
 
-interface Player {
+export interface IPlayer {
     id: number;
-    title: string;
     firstName: string;
     lastName: string;
     birthday: Date;
     clubPlayer: Boolean;
+}
+
+export class Player implements IPlayer {
+    id!: number;
+    firstName!: string;
+    lastName!: string;
+    birthday!: Date;
+    clubPlayer!: Boolean;
 }
