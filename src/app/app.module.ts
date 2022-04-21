@@ -11,6 +11,8 @@ import { TeamsDashboardComponent } from './teams-dashboard/teams-dashboard.compo
 import { DndDirective } from './direcitves/dnd.direcitves';
 import { ProgressComponent } from './components/progress/progress.component';
 import { PlayersDashboardComponent } from './players-dashboard/players-dashboard.component';
+import { EditPlayerComponent } from './edit-player/edit-player.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,8 @@ import { PlayersDashboardComponent } from './players-dashboard/players-dashboard
     MailImporterComponent,
     DndDirective,
     ProgressComponent,
-    PlayersDashboardComponent
+    PlayersDashboardComponent,
+    EditPlayerComponent
   ],
   imports: [
     AppRoutingModule,
@@ -27,7 +30,8 @@ import { PlayersDashboardComponent } from './players-dashboard/players-dashboard
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NotificationModule
+    NotificationModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

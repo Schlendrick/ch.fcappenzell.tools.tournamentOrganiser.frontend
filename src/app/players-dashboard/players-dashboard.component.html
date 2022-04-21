@@ -45,9 +45,9 @@
                                         style="cursor: pointer;"><i class="material-icons" data-toggle="tooltip"
                                             title="Delete">&#xE872;</i></a>
 
-                                    <a href="#editPlayerModal" class="edit" data-toggle="modal"
-                                        style="cursor: pointer;"><i class="material-icons" data-toggle="tooltip"
-                                            title="Edit">&#xE3c9;</i></a>
+                                    <a (click)="onEditPlayer(player)" href="#editPlayerModal" class="edit"
+                                        data-toggle="modal" style="cursor: pointer;"><i class="material-icons"
+                                            data-toggle="tooltip" title="Edit">&#xE3c9;</i></a>
                                 </td>
                         </tbody>
                     </table>
@@ -130,32 +130,45 @@
 
                 <div class="modal-body">
 
-                    <div class="form-group">
-                        <label for="first-name">First Name: </label>
-                        <input id="first-name" type="text" formControlName="firstName" required class="form-control">
-                    </div>
+                    <form>
+                        <div class="mb-3">
 
-                    <div class="form-group">
-                        <label for="last-name">Last Name: </label>
-                        <input id="last-name" type="text" formControlName="lastName" required class="form-control">
-                    </div>
 
-                    <div class="form-group">
-                        <label for="last-name">Birthday: </label>
-                        <input id="last-name" type="text" formControlName="lastName" required class="form-control">
-                    </div>
+                            <label for="dateOfBirth">Date of birth</label>
+                            <div class="input-group">
+                                <input id="dateOfBirth" class="form-control" placeholder="yyyy-mm-dd" name="dp">
+                            </div>
 
-                    <div class="form-group">
-                        <label for="club-player">Club Player: </label>
-                        <input id="club-player" type="text" formControlName="lastName" required class="form-control">
-                    </div>
+                            <label for="first-name">First Name:</label>
+                            <div class="input-group">
+                                <input id="first-name" required class="form-control">
+                            </div>
+
+                            <label for="last-name">Last Name:</label>
+                            <div class="input-group">
+                                <input id="last-name" required class="form-control">
+                            </div>
+
+                            <label for="birthday">Birthday:</label>
+                            <div class="input-group">
+                                <input id="birthday" required class="form-control">
+                            </div>
+
+                            <label for="club-player">Club Player:</label>
+                            <div class="input-group">
+                                <input id="club-player" required class="form-control">
+                            </div>
+                        </div>
+                    </form>
+
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-warning" id="closeModal" data-dismiss="modal">
                         Cancel
                     </button>
-                    <button type="submit" class="btn btn-success" (click)="updatePlayer()">Update Player</button>
+                    <button type="submit" class="btn btn-outline-primary" (click)="updatePlayer()">Update
+                        Player</button>
                 </div>
             </form>
         </div>

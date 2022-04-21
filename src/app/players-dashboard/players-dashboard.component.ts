@@ -7,6 +7,8 @@ import { CommonResponse } from '../interface/common-response';
 import { NotificationService } from '../service/notification.service';
 import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
 import { Player } from '../interface/team';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EditPlayerComponent } from '../edit-player/edit-player.component';
 
 @Component({
   selector: 'app-players-dashboard',
@@ -22,7 +24,7 @@ export class PlayersDashboardComponent implements OnInit {
   isLoading$ = this.isLoading.asObservable();
   private dataSubject = new BehaviorSubject<CommonResponse>(null!);
 
-  constructor(private playerService: PlayerService, private frombuilder: FormBuilder, private notifier: NotificationService) { }
+  constructor(private playerService: PlayerService, private frombuilder: FormBuilder, private notifier: NotificationService, private modalService: NgbModal) { }
 
   ngOnInit(): void {
 
@@ -75,11 +77,21 @@ export class PlayersDashboardComponent implements OnInit {
       );
   }
 
-  onEditPlayer(player: Player): void {
-    this.formValue.controls['First Name'].setValue(player.firstName);
-    this.formValue.controls['Last Name'].setValue(player.lastName);
-    this.formValue.controls['Birthday'].setValue(player.birthday);
-    this.formValue.controls['Club Player'].setValue(player.clubPlayer);
+  editPlayer(userModel: Player) {
+    // this.router.navigateByUrl(`EditUser/${userModel.id}`);
+
+    const ref = this.modalService.open(EditPlayerComponent, { centered: true });
+    ref.componentInstance.selectedUser = userModel;
+
+    ref.result.then((yes) => {
+      console.log("Yes Click");
+
+
+    },
+      (cancel) => {
+        console.log("Cancel Click");
+
+      })
   }
 
   updatePlayer(): void {
