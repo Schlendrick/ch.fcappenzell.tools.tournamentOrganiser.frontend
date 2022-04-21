@@ -1,4 +1,4 @@
-import { Team } from "./team";
+import { Player, Team } from "./team";
 
 export interface CommonResponse {
     timeStamp: Date;
@@ -7,6 +7,6 @@ export interface CommonResponse {
     reason: string;
     message: string;
     developerMessage: string;
-    data: { teams?: Team[], team?: Team }
+    data: { teams?: Team[], team?: Team, players?: Player[], player?: Player }
 
 }

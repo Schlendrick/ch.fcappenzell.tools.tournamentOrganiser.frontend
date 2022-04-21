@@ -10,6 +10,7 @@ import { MailImporterComponent } from './mail-importer/mail-importer.component';
 import { TeamsDashboardComponent } from './teams-dashboard/teams-dashboard.component';
 import { DndDirective } from './direcitves/dnd.direcitves';
 import { ProgressComponent } from './components/progress/progress.component';
+import { PlayersDashboardComponent } from './players-dashboard/players-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { ProgressComponent } from './components/progress/progress.component';
     TeamsDashboardComponent,
     MailImporterComponent,
     DndDirective,
-    ProgressComponent
+    ProgressComponent,
+    PlayersDashboardComponent
   ],
   imports: [
     AppRoutingModule,
