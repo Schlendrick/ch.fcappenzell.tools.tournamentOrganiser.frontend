@@ -24,15 +24,9 @@ export class PlayersDashboardComponent implements OnInit {
   isLoading$ = this.isLoading.asObservable();
   private dataSubject = new BehaviorSubject<CommonResponse>(null!);
 
-  constructor(private playerService: PlayerService, private frombuilder: FormBuilder, private notifier: NotificationService, private modalService: NgbModal) { }
+  constructor(private playerService: PlayerService, private notifier: NotificationService, private modalService: NgbModal) { }
 
   ngOnInit(): void {
-
-    this.formValue = this.frombuilder.group({
-      firstName: [''],
-      lastName: [''],
-      birthday: ['']
-    })
 
     this.appState$ = this.playerService.players$
       .pipe(
@@ -78,14 +72,12 @@ export class PlayersDashboardComponent implements OnInit {
   }
 
   editPlayer(userModel: Player) {
-    // this.router.navigateByUrl(`EditUser/${userModel.id}`);
 
     const ref = this.modalService.open(EditPlayerComponent, { centered: true });
-    ref.componentInstance.selectedUser = userModel;
+    ref.componentInstance.selectedPlayer = userModel;
 
     ref.result.then((yes) => {
       console.log("Yes Click");
-
 
     },
       (cancel) => {
