@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder, FormGroup, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { BehaviorSubject, catchError, map, Observable, of, startWith } from 'rxjs';
 import { TeamService } from '../service/team.service';
 import { DataState } from '../enum/data-state.enum';
@@ -7,8 +7,6 @@ import { AppState } from '../interface/app-state';
 import { CommonResponse } from '../interface/common-response';
 import { Team } from '../interface/team';
 import { NotificationService } from '../service/notification.service';
-import { NotificationModule } from '../notification/notification.module';
-
 
 @Component({
   selector: 'app-teams-dashboard',
@@ -19,35 +17,21 @@ export class TeamsDashboardComponent implements OnInit {
 
   appState$!: Observable<AppState<CommonResponse>>;
   readonly DataState = DataState;
-  formValue !: FormGroup;
   private isLoading = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoading.asObservable();
   private dataSubject = new BehaviorSubject<CommonResponse>(null!);
 
-  constructor(private teamService: TeamService, private frombuilder: FormBuilder, private notifier: NotificationService) { }
+  constructor(private teamService: TeamService, private notifier: NotificationService) { }
 
-  teamForm = new FormGroup({
-    firstName: new FormControl(''),
-    lastName: new FormControl(''),
-    address: new FormGroup({
-      street: new FormControl(''),
-      city: new FormControl(''),
-      state: new FormControl(''),
-      zip: new FormControl('')
-    })
-  });
+  public teams: Team[] | undefined;
+  public editTeam: Team | undefined;
+  public deleteTeam: Team | undefined;
 
   ngOnInit(): void {
-    this.formValue = this.frombuilder.group({
-      name: [''],
-      category: [''],
-      firstName: [''],
-      lastName: [''],
-      email: [''],
-      mobile: [''],
-      categroy: ['']
-    })
+    this.getTeams();
+  }
 
+  public getTeams(): void {
     this.appState$ = this.teamService.teams$
       .pipe(
         map(response => {
@@ -63,14 +47,10 @@ export class TeamsDashboardComponent implements OnInit {
       );
   }
 
-  onSubmit() {
-    // TODO: Use EventEmitter with form value
-    console.warn(this.teamForm.value);
-  }
-
-  createTeam(teamForm: NgForm): void {
+  public onAddTeam(addForm: NgForm): void {
+    document.getElementById('add-team-form')!.click();
     this.isLoading.next(true);
-    this.appState$ = this.teamService.create$(teamForm.value as Team)
+    this.appState$ = this.teamService.create$(addForm.value as Team)
       .pipe(
         map(response => {
           this.dataSubject.next(
@@ -90,23 +70,15 @@ export class TeamsDashboardComponent implements OnInit {
       );
   }
 
-  onEditTeam(team: Team): void {
-    this.formValue.controls['name'].setValue(team.name);
-    this.formValue.controls['category'].setValue(team.category);
-    this.formValue.controls['firstName'].setValue(team.captain.firstName);
-    this.formValue.controls['lastName'].setValue(team.captain.lastName);
-  }
-
-  updateTeam(): void {
+  public onUpdateTeam(team: Team): void {
     this.isLoading.next(true);
-    this.appState$ = this.teamService.update$(this.formValue.value as Team)
+    this.appState$ = this.teamService.update$(team)
       .pipe(
         map(response => {
           this.dataSubject.next(
             { ...response, data: { teams: [response.data.team!, ...this.dataSubject.value.data.teams!] } }
           );
           this.notifier.onDefault(response.message);
-          document.getElementById('closeModal')!.click();
           this.isLoading.next(false);
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
         }),
@@ -119,14 +91,14 @@ export class TeamsDashboardComponent implements OnInit {
       );
   }
 
-  deleteTeam(team: Team): void {
-    this.appState$ = this.teamService.delete$(team.id)
+  public onDeleteTeam(team: Team | undefined): void {
+    this.appState$ = this.teamService.delete$(team!.id)
       .pipe(
         map(response => {
           this.dataSubject.next(
             {
               ...response, data:
-                { teams: this.dataSubject.value.data.teams!.filter(s => s.id !== team.id) }
+                { teams: this.dataSubject.value.data.teams!.filter(s => s.id !== team!.id) }
             }
           );
           this.notifier.onDefault(response.message);
@@ -138,6 +110,27 @@ export class TeamsDashboardComponent implements OnInit {
           return of({ dataState: DataState.ERROR_STATE, error });
         })
       );
+  }
+
+  public onOpenModal(team: Team | undefined, mode: string): void {
+    const container = document.getElementById('main-container');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.style.display = 'none';
+    button.setAttribute('data-toggle', 'modal');
+    if (mode === 'add') {
+      button.setAttribute('data-target', '#addTeamModal');
+    }
+    if (mode === 'edit') {
+      this.editTeam = team;
+      button.setAttribute('data-target', '#updateTeamModal');
+    }
+    if (mode === 'delete') {
+      this.deleteTeam = team;
+      button.setAttribute('data-target', '#deleteTeamModal');
+    }
+    container!.appendChild(button);
+    button.click();
   }
 
 }

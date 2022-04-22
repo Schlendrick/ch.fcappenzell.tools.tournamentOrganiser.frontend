@@ -5,10 +5,8 @@ import { DataState } from '../enum/data-state.enum';
 import { AppState } from '../interface/app-state';
 import { CommonResponse } from '../interface/common-response';
 import { NotificationService } from '../service/notification.service';
-import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { Player } from '../interface/team';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { EditPlayerComponent } from '../edit-player/edit-player.component';
 
 @Component({
   selector: 'app-players-dashboard',
@@ -19,15 +17,21 @@ export class PlayersDashboardComponent implements OnInit {
 
   appState$!: Observable<AppState<CommonResponse>>;
   readonly DataState = DataState;
-  formValue !: FormGroup;
   private isLoading = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoading.asObservable();
   private dataSubject = new BehaviorSubject<CommonResponse>(null!);
 
-  constructor(private playerService: PlayerService, private notifier: NotificationService, private modalService: NgbModal) { }
+  constructor(private playerService: PlayerService, private notifier: NotificationService) { }
+
+  public players: Player[] | undefined;
+  public editPlayer: Player | undefined;
+  public deletePlayer: Player | undefined;
 
   ngOnInit(): void {
+    this.getPlayers();
+  }
 
+  public getPlayers(): void {
     this.appState$ = this.playerService.players$
       .pipe(
         map(response => {
@@ -41,17 +45,12 @@ export class PlayersDashboardComponent implements OnInit {
           return of({ dataState: DataState.ERROR_STATE, error: error })
         })
       );
-
   }
 
-  onSubmit() {
-    // TODO: Use EventEmitter with form value
-
-  }
-
-  createPlayer(playerForm: NgForm): void {
+  public onAddEmloyee(addForm: NgForm): void {
+    document.getElementById('add-player-form')!.click();
     this.isLoading.next(true);
-    this.appState$ = this.playerService.create$(playerForm.value as Player)
+    this.appState$ = this.playerService.create$(addForm.value as Player)
       .pipe(
         map(response => {
           this.dataSubject.next(
@@ -71,31 +70,15 @@ export class PlayersDashboardComponent implements OnInit {
       );
   }
 
-  editPlayer(userModel: Player) {
-
-    const ref = this.modalService.open(EditPlayerComponent, { centered: true });
-    ref.componentInstance.selectedPlayer = userModel;
-
-    ref.result.then((yes) => {
-      console.log("Yes Click");
-
-    },
-      (cancel) => {
-        console.log("Cancel Click");
-
-      })
-  }
-
-  updatePlayer(): void {
+  public onUpdateEmloyee(player: Player): void {
     this.isLoading.next(true);
-    this.appState$ = this.playerService.update$(this.formValue.value as Player)
+    this.appState$ = this.playerService.update$(player)
       .pipe(
         map(response => {
           this.dataSubject.next(
             { ...response, data: { players: [response.data.player!, ...this.dataSubject.value.data.players!] } }
           );
           this.notifier.onDefault(response.message);
-          document.getElementById('closeModal')!.click();
           this.isLoading.next(false);
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
         }),
@@ -108,14 +91,14 @@ export class PlayersDashboardComponent implements OnInit {
       );
   }
 
-  deletePlayer(player: Player): void {
-    this.appState$ = this.playerService.delete$(player.id)
+  public onDeleteEmloyee(player: Player | undefined): void {
+    this.appState$ = this.playerService.delete$(player!.id)
       .pipe(
         map(response => {
           this.dataSubject.next(
             {
               ...response, data:
-                { players: this.dataSubject.value.data.players!.filter(s => s.id !== player.id) }
+                { players: this.dataSubject.value.data.players!.filter(s => s.id !== player!.id) }
             }
           );
           this.notifier.onDefault(response.message);
@@ -127,6 +110,27 @@ export class PlayersDashboardComponent implements OnInit {
           return of({ dataState: DataState.ERROR_STATE, error });
         })
       );
+  }
+
+  public onOpenModal(player: Player | undefined, mode: string): void {
+    const container = document.getElementById('main-container');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.style.display = 'none';
+    button.setAttribute('data-toggle', 'modal');
+    if (mode === 'add') {
+      button.setAttribute('data-target', '#addPlayerModal');
+    }
+    if (mode === 'edit') {
+      this.editPlayer = player;
+      button.setAttribute('data-target', '#updatePlayerModal');
+    }
+    if (mode === 'delete') {
+      this.deletePlayer = player;
+      button.setAttribute('data-target', '#deletePlayerModal');
+    }
+    container!.appendChild(button);
+    button.click();
   }
 
 }

@@ -1,13 +1,13 @@
 <div class="container-xl">
     <div class="table-responsive">
         <div class="table-wrapper">
-            <div class="table-title">
+            <div class="table-title" id="main-container">
                 <div class="row">
                     <div class="col-sm-6">
                         <h2>Manage Teams</h2>
                     </div>
                     <div class="col-sm-6">
-                        <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal">
+                        <a (click)="onOpenModal(undefined, 'add')" class="btn btn-success" data-toggle="modal">
                             <i class="material-icons">&#xE147;</i>
                             <span>New Team</span>
                         </a>
@@ -36,7 +36,7 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody *ngFor="let team of appState.appData?.data?.teams; let i = index" >
+                        <tbody *ngFor="let team of appState.appData?.data?.teams; let i = index">
                             <tr>
                                 <td>{{ team.id }}</td>
                                 <td>{{ team.name }}</td>
@@ -47,13 +47,11 @@
                                 <td>{{ team.captain.plz }} </td>
                                 <td>{{ team.captain.place }} </td>
                                 <td>
-                                    <a (click)="deleteTeam(team)" class="delete" data-toggle="modal"
-                                        style="cursor: pointer;"><i class="material-icons" data-toggle="tooltip"
-                                            title="Delete">&#xE872;</i></a>
+                                    <a (click)="onOpenModal(team, 'delete')" class="delete" style="cursor: pointer;"><i
+                                            class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
 
-                                    <a href="#editTeamModal" class="edit" data-toggle="modal"
-                                    style="cursor: pointer;"><i class="material-icons" data-toggle="tooltip"
-                                        title="Edit">&#xE3c9;</i></a>
+                                    <a (click)="onOpenModal(team, 'edit')" class="delete" style="cursor: pointer;"><i
+                                            class="material-icons" data-toggle="tooltip" title="Edit">&#xE3c9;</i></a>
                                 </td>
                         </tbody>
                     </table>
@@ -66,110 +64,124 @@
             </ng-container>
         </div>
     </div>
-  </div>
+</div>
 
-  <!-- Add server Modal HTML -->
-  <div id="addEmployeeModal" class="modal fade">
-    <div class="modal-dialog">
+<!-- Add Team Modal -->
+<div class="modal fade" id="addTeamModal" tabindex="-1" role="dialog" aria-labelledby="addTeamModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form #teamForm="ngForm" (ngSubmit)="createTeam(teamForm)">
-                <div class="modal-header">
-                    <h4 class="modal-title">Add new team</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-                <div class="modal-body">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTeamModalLabel">Add Team</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form #addForm="ngForm" (ngSubmit)="onAddTeam(addForm)">
                     <div class="form-group">
-                        <label>Team Name</label>
-                        <input type="text" ngModel name="name" class="form-control" required>
+                        <label for="name">Name</label>
+                        <input type="text" ngModel name="name" class="form-control" id="name" placeholder="Name"
+                            required>
                     </div>
                     <div class="form-group">
-                        <label>Category</label>
-                        <select name="category" ngModel="SERVER_DOWN" class="form-control" name="status" required>
-                            <option value="SERVER_UP">SERVER UP</option>
-                            <option value="SERVER_DOWN">SERVER DOWN</option>
-                        </select>
+                        <label for="email">Email Address</label>
+                        <input type="email" ngModel name="email" class="form-control" id="email" placeholder="Email"
+                            required>
                     </div>
-                    <div class="row">
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
-                            <div class="form-group">
-                                <label>Memory</label>
-                                <input type="text" ngModel name="memory" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
-                            <div class="form-group">
-                                <label>Type</label>
-                                <input type="text" ngModel name="type" class="form-control" required>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-warning" id="closeModal" data-dismiss="modal">
-                        Cancel
-                    </button>
-                    <button type="submit" [disabled]="teamForm.invalid || (isLoading$ | async)"
-                        class="btn btn-success">
-                        <i *ngIf="isLoading$ | async" class="fas fa-spinner fa-spin"></i>
-                        <span *ngIf="isLoading$ | async">Saving...</span>
-                        <span *ngIf="!(isLoading$ | async)">Add</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-  </div>
-
-
-<!-- Add server Modal HTML -->
-<div id="editTeamModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form (ngSubmit)="onSubmit()">
-
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit team</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-
-                <div class="modal-body">
-
                     <div class="form-group">
-                        <label for="first-name">First Name: </label>
-                        <input id="first-name" type="text" formControlName="firstName" required class="form-control">
+                        <label for="phone">Job title</label>
+                        <input type="text" ngModel name="jobTitle" class="form-control" id="jobTile"
+                            placeholder="Job title" required>
                     </div>
-
                     <div class="form-group">
-                        <label for="last-name">Last Name: </label>
-                        <input id="last-name" type="text" formControlName="lastName" required class="form-control">
+                        <label for="phone">Phone</label>
+                        <input type="text" ngModel name="phone" class="form-control" id="phone" placeholder="Phone"
+                            required>
                     </div>
-                    
-                    <div formGroupName="address">
-                        <h2>Address</h2>
-                    
-                        <label for="street">Street: </label>
-                        <input id="street" type="text" formControlName="street" required class="form-control">
-                    
-                        <label for="city">City: </label>
-                        <input id="city" type="text" formControlName="city" required class="form-control">
-                    
-                        <label for="state">State: </label>
-                        <input id="state" type="text" formControlName="state" required class="form-control">
-                    
-                        <label for="zip">Zip Code: </label>
-                        <input id="zip"type="text" formControlName="zip" required class="form-control">
+                    <div class="form-group">
+                        <label for="phone">Image URL</label>
+                        <input type="text" ngModel name="imageUrl" class="form-control" id="imageUrl"
+                            placeholder="Image URL" required>
                     </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-warning" id="closeModal" data-dismiss="modal">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn btn-success"(click)="updateTeam()">Update Team</button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" id="add-team-form" class="btn btn-secondary"
+                            data-dismiss="modal">Close</button>
+                        <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
                 </form>
+            </div>
         </div>
     </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="updateTeamModal" tabindex="-1" role="dialog" aria-labelledby="teamEditModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateTeamModalLabel">Edit Team {{editTeam?.name}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form #editForm="ngForm">
+
+                    <input type="hidden" ngModel="{{editTeam?.id}}" name="id" class="form-control" id="id"
+                        placeholder="Email">
+
+                    <div class="form-group">
+                        <label for="category">Name</label>
+                        <input type="text" ngModel="{{editTeam?.category}}" name="category" class="form-control"
+                            id="category" placeholder="Category">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" ngModel="{{editTeam?.name}}" name="name" class="form-control" id="name"
+                            placeholder="Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="captain">Captain</label>
+                        <input type="text" ngModel="{{editTeam?.captain?.firstName}}" name="lastName"
+                            class="form-control" id="captain" placeholder="Captain">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                        <button (click)="onUpdateTeam(editForm.value)" data-dismiss="modal" class="btn btn-primary">Save
+                            changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-  <notifier-container></notifier-container>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteTeamModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModelLabel">Delete Team</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete team {{deleteTeam?.name}}?</p>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button (click)="onDeleteTeam(deleteTeam)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<notifier-container></notifier-container>

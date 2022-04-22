@@ -43,6 +43,7 @@ export class Captain implements ICaptain {
 
 export interface IPlayer {
     id: number;
+    title: string;
     firstName: string;
     lastName: string;
     birthday: Date;
@@ -51,6 +52,7 @@ export interface IPlayer {
 
 export class Player implements IPlayer {
     id!: number;
+    title!: string;
     firstName!: string;
     lastName!: string;
     birthday!: Date;
