@@ -57,7 +57,6 @@ export class TeamsDashboardComponent implements OnInit {
             { ...response, data: { teams: [response.data.team!, ...this.dataSubject.value.data.teams!] } }
           );
           this.notifier.onDefault(response.message);
-          document.getElementById('closeModal')!.click();
           this.isLoading.next(false);
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
         }),

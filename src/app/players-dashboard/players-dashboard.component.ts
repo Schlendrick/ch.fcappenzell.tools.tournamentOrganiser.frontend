@@ -47,7 +47,7 @@ export class PlayersDashboardComponent implements OnInit {
       );
   }
 
-  public onAddEmloyee(addForm: NgForm): void {
+  public onAddPlayer(addForm: NgForm): void {
     document.getElementById('add-player-form')!.click();
     this.isLoading.next(true);
     this.appState$ = this.playerService.create$(addForm.value as Player)
@@ -57,7 +57,6 @@ export class PlayersDashboardComponent implements OnInit {
             { ...response, data: { players: [response.data.player!, ...this.dataSubject.value.data.players!] } }
           );
           this.notifier.onDefault(response.message);
-          document.getElementById('closeModal')!.click();
           this.isLoading.next(false);
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
         }),
@@ -70,14 +69,13 @@ export class PlayersDashboardComponent implements OnInit {
       );
   }
 
-  public onUpdateEmloyee(player: Player): void {
+  public onUpdatePlayer(player: Player): void {
     this.isLoading.next(true);
     this.appState$ = this.playerService.update$(player)
       .pipe(
         map(response => {
-          this.dataSubject.next(
-            { ...response, data: { players: [response.data.player!, ...this.dataSubject.value.data.players!] } }
-          );
+          const index = this.dataSubject.value.data.players?.findIndex(server => server.id === response.data.player?.id);
+          this.dataSubject.value.data.players![index as number] = response.data.player!;
           this.notifier.onDefault(response.message);
           this.isLoading.next(false);
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
@@ -91,7 +89,7 @@ export class PlayersDashboardComponent implements OnInit {
       );
   }
 
-  public onDeleteEmloyee(player: Player | undefined): void {
+  public onDeletePlayer(player: Player | undefined): void {
     this.appState$ = this.playerService.delete$(player!.id)
       .pipe(
         map(response => {
