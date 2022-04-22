@@ -74,7 +74,7 @@ export class PlayersDashboardComponent implements OnInit {
     this.appState$ = this.playerService.update$(player)
       .pipe(
         map(response => {
-          const index = this.dataSubject.value.data.players?.findIndex(server => server.id === response.data.player?.id);
+          const index = this.dataSubject.value.data.players?.findIndex(player => player.id === response.data.player?.id);
           this.dataSubject.value.data.players![index as number] = response.data.player!;
           this.notifier.onDefault(response.message);
           this.isLoading.next(false);

@@ -74,9 +74,8 @@ export class TeamsDashboardComponent implements OnInit {
     this.appState$ = this.teamService.update$(team)
       .pipe(
         map(response => {
-          this.dataSubject.next(
-            { ...response, data: { teams: [response.data.team!, ...this.dataSubject.value.data.teams!] } }
-          );
+          const index = this.dataSubject.value.data.teams?.findIndex(team => team.id === response.data.team?.id);
+          this.dataSubject.value.data.teams![index as number] = response.data.team!;
           this.notifier.onDefault(response.message);
           this.isLoading.next(false);
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
