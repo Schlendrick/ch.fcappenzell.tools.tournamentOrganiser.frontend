@@ -77,8 +77,11 @@
                 <form #addForm="ngForm" (ngSubmit)="onAddPlayer(addForm)">
                     <div class="form-group">
                         <label for="title">Title</label>
-                        <input type="text" ngModel name="title" class="form-control" id="title" placeholder="Herr"
-                            required>
+                        <select class="form-control" ngModel name="title" class="form-control" id="title"
+                            placeholder="Title" required>
+                            <option>Herr</option>
+                            <option>Frau</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="firstName">First Name</label>
@@ -93,12 +96,12 @@
                     <div class="form-group">
                         <label for="birthday">Birthday</label>
                         <input type="text" ngModel name="birthday" class="form-control" id="birthday"
-                            placeholder="2000-19-10" required>
+                            placeholder="yyyy-mm-dd" required>
                     </div>
-                    <div class="form-group">
-                        <label for="clubPlayer">Club Player</label>
-                        <input type="text" ngModel name="clubPlayer" class="form-control" id="clubPlayer"
-                            placeholder="false" required>
+                    <div class="form-check">
+                        <input type="checkbox" ngModel name="clubPlayer" class="form-check-input" id="clubPlayer"
+                            value="false">
+                        <label class="form-check-label" for="clubPlayer">Club Player</label>
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="add-player-form" class="btn btn-secondary"
@@ -127,33 +130,34 @@
 
                     <input type="hidden" ngModel="{{editPlayer?.id}}" name="id" class="form-control" id="id"
                         placeholder="None">
-
                     <div class="form-group">
                         <label for="title">Title</label>
-                        <input type="title" ngModel="{{editPlayer?.title}}" name="title" class="form-control" id="title"
-                            placeholder="Title">
+                        <select class="form-control" ngModel="{{editPlayer?.title}}" name="title" class="form-control"
+                            id="title" placeholder="Title">
+                            <option>Herr</option>
+                            <option>Frau</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label for="firstName">First Name</label>
+                        <label for="firstName" class="form-label">First Name</label>
                         <input type="text" ngModel="{{editPlayer?.firstName}}" name="firstName" class="form-control"
                             id="firstName" placeholder="First Name">
                     </div>
                     <div class="form-group">
-                        <label for="lastName">Last Name</label>
+                        <label for="lastName" class="form-label">Last Name</label>
                         <input type="text" ngModel="{{editPlayer?.lastName}}" name="lastName" class="form-control"
                             id="lastName" placeholder="Last Name">
                     </div>
                     <div class="form-group">
-                        <label for="birthday">Birthday</label>
-                        <input type="birthday" ngModel="{{editPlayer?.birthday}}" name="birthday" class="form-control"
-                            id="birthday" placeholder="Birthday">
+                        <label for="birthday" class="form-label">Birthday</label>
+                        <input type="text" ngModel="{{editPlayer?.birthday}}" name="birthday" class="form-control"
+                            id="birthday" placeholder="yyyy-mm-dd">
                     </div>
-                    <div class="form-group">
-                        <label for="clubPlayer">Club Player</label>
-                        <input type="clubPlayer" ngModel="{{editPlayer?.clubPlayer}}" name="clubPlayer"
-                            class="form-control" id="clubPlayer" placeholder="false">
+                    <div class="form-check">
+                        <input type="checkbox" ngModel="{{editPlayer?.clubPlayer}}" name="clubPlayer"
+                            class="form-check-input" id="clubPlayer" placeholder="false">
+                        <label class="form-check-label" for="clubPlayer">Club Player</label>
                     </div>
-
                     <div class="modal-footer">
                         <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
                         <button (click)="onUpdatePlayer(editForm.value)" data-dismiss="modal"
