@@ -10,7 +10,8 @@ import { MailImporterComponent } from './mail-importer/mail-importer.component';
 import { TeamsDashboardComponent } from './teams-dashboard/teams-dashboard.component';
 import { DndDirective } from './direcitves/dnd.direcitves';
 import { ProgressComponent } from './components/progress/progress.component';
-import { PlayersDashboardComponent } from './players-dashboard/players-dashboard.component';
+import { PlayersDashboardComponent } from './players-dashboard/players-dashboard.component'
+import { CustomDatePipe } from './pipe/custom-date.pipe';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { PlayersDashboardComponent } from './players-dashboard/players-dashboard
     MailImporterComponent,
     DndDirective,
     ProgressComponent,
-    PlayersDashboardComponent
+    PlayersDashboardComponent,
+    CustomDatePipe
   ],
   imports: [
     AppRoutingModule,

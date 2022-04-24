@@ -39,7 +39,7 @@
                                 <td>{{ player.title }}</td>
                                 <td>{{ player.firstName }}</td>
                                 <td>{{ player.lastName }}</td>
-                                <td>{{ player.birthday }}</td>
+                                <td>{{ player.birthday | customDate}}</td>
                                 <td>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox"
@@ -158,8 +158,8 @@
                     </div>
                     <div class="form-group">
                         <label for="birthday" class="form-label">Birthday</label>
-                        <input type="text" ngModel="{{editPlayer?.birthday}}" name="birthday" class="form-control"
-                            id="birthday" placeholder="yyyy-mm-dd">
+                        <input type="text" ngModel="{{editPlayer?.birthday | customDate}}" name="birthday"
+                            class="form-control" id="birthday" placeholder="yyyy-mm-dd">
                     </div>
                     <div class="form-check">
                         <input type="checkbox" ngModel="{{editPlayer?.clubPlayer}}" name="clubPlayer"
