@@ -162,8 +162,9 @@
                             class="form-control" id="birthday" placeholder="yyyy-mm-dd">
                     </div>
                     <div class="form-check">
-                        <input type="checkbox" ngModel="{{editPlayer?.clubPlayer}}" name="clubPlayer"
-                            class="form-check-input" id="clubPlayer" placeholder="false">
+                        <input type="checkbox" [checked]="editPlayer?.clubPlayer == true"
+                            ngModel="{{editPlayer?.clubPlayer}}" name="clubPlayer" class="form-check-input"
+                            id="clubPlayer" placeholder="false">
                         <label class="form-check-label" for="clubPlayer">Club Player</label>
                     </div>
                     <div class="modal-footer">
