@@ -23,7 +23,6 @@ export class PlayersDashboardComponent implements OnInit {
 
   constructor(private playerService: PlayerService, private notifier: NotificationService) { }
 
-  public players: Player[] | undefined;
   public editPlayer: Player | undefined;
   public deletePlayer: Player | undefined;
 
@@ -108,6 +107,24 @@ export class PlayersDashboardComponent implements OnInit {
           return of({ dataState: DataState.ERROR_STATE, error });
         })
       );
+  }
+
+
+  public searchPlayers(key: string): void {
+    console.log(key);
+    const results: Player[] = [];
+    for (const player of this.dataSubject.value.data.players!) {
+      if (
+        player.title.toLowerCase().indexOf(key.toLowerCase()) !== -1
+        || player.firstName.toLowerCase().indexOf(key.toLowerCase()) !== -1
+        || player.lastName.toLowerCase().indexOf(key.toLowerCase()) !== -1) {
+        results.push(player);
+      }
+    }
+    this.dataSubject.value.data.players = results;
+    if (results.length === 0 || !key) {
+      this.getPlayers();
+    }
   }
 
   public onOpenModal(player: Player | undefined, mode: string): void {

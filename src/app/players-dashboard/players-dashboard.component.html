@@ -2,18 +2,25 @@
     <div class="table-responsive">
         <div class="table-wrapper">
             <div class="table-title" id="main-container">
+                <br>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <h2>Manage Players</h2>
                     </div>
-                    <div class="col-sm-6">
-                        <a (click)="onOpenModal(undefined, 'add')" class="btn btn-success">
-                            <i class="material-icons">&#xE147;</i>
-                            <span>New Player</span>
-                        </a>
+                    <div class="col-sm-4">
+                        <button (click)="onOpenModal(undefined, 'add')" class="btn btn-success my-2 my-sm-0"><i
+                                class="fa fa-user-plus"></i> Player</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <form class="form-inline my-2 my-sm-0">
+                            <input class="form-control mr-sm-2" type="search" placeholder="Search players..."
+                                (ngModelChange)="searchPlayers(key.value)" #key="ngModel" ngModel name="key"
+                                id="searchName" class="form-control mr-sm-2" required>
+                        </form>
                     </div>
                 </div>
-            </div> <br>
+            </div>
+            <br>
             <ng-container *ngIf="(appState$ | async) as appState" [ngSwitch]="appState.dataState">
                 <ng-container *ngSwitchCase="DataState.LOADING_STATE">
                     <div class="col-md-12 single-note-item text-center">
@@ -162,9 +169,8 @@
                             class="form-control" id="birthday" placeholder="yyyy-mm-dd">
                     </div>
                     <div class="form-check">
-                        <input type="checkbox" [checked]="editPlayer?.clubPlayer == true"
-                            ngModel="{{editPlayer?.clubPlayer}}" name="clubPlayer" class="form-check-input"
-                            id="clubPlayer" placeholder="false">
+                        <input type="checkbox" value="" ngModel="{{editPlayer?.clubPlayer}}" name="clubPlayer"
+                            class="form-check-input" id="clubPlayer" placeholder="false">
                         <label class="form-check-label" for="clubPlayer">Club Player</label>
                     </div>
                     <div class="modal-footer">
