@@ -56,5 +56,5 @@ export class Player implements IPlayer {
     firstName!: string;
     lastName!: string;
     birthday!: Date;
-    clubPlayer!: Boolean;
+    clubPlayer: Boolean = false;
 }
