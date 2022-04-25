@@ -49,6 +49,7 @@ export class PlayersDashboardComponent implements OnInit {
   public onAddPlayer(addForm: NgForm): void {
     document.getElementById('add-player-form')!.click();
     this.isLoading.next(true);
+    if (addForm.value.clubPlayer == "") { (addForm.value as Player).clubPlayer = false } // Todo gibs hier eine andere moeglichkeit
     this.appState$ = this.playerService.create$(addForm.value as Player)
       .pipe(
         map(response => {
