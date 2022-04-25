@@ -2,19 +2,18 @@
     <div class="table-responsive">
         <div class="table-wrapper">
             <div class="table-title" id="main-container">
+                <br>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <h2>Manage Teams</h2>
                     </div>
-                    <div class="col-sm-6">
-                        <a (click)="onOpenModal(undefined, 'add')" class="btn btn-success" data-toggle="modal">
-                            <i class="material-icons">&#xE147;</i>
-                            <span>New Team</span>
-                        </a>
-
+                    <div class="col-sm-4">
+                        <button (click)="onOpenModal(undefined, 'add')" class="btn btn-success my-2 my-sm-0"><i
+                                class="fa fa-user-plus"></i> Team</button>
                     </div>
                 </div>
-            </div> <br>
+            </div>
+            <br>
             <ng-container *ngIf="(appState$ | async) as appState" [ngSwitch]="appState.dataState">
                 <ng-container *ngSwitchCase="DataState.LOADING_STATE">
                     <div class="col-md-12 single-note-item text-center">
@@ -47,11 +46,13 @@
                                 <td>{{ team.captain.plz }} </td>
                                 <td>{{ team.captain.place }} </td>
                                 <td>
+
                                     <a (click)="onOpenModal(team, 'delete')" class="delete" style="cursor: pointer;"><i
-                                            class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                                            class="fa fa-trash" data-toggle="tooltip"
+                                            title="Delete">&nbsp;&nbsp;&nbsp;</i></a>
 
                                     <a (click)="onOpenModal(team, 'edit')" class="delete" style="cursor: pointer;"><i
-                                            class="material-icons" data-toggle="tooltip" title="Edit">&#xE3c9;</i></a>
+                                            class="fa fa-edit" data-toggle="tooltip" title="Edit"></i></a>
                                 </td>
                         </tbody>
                     </table>
