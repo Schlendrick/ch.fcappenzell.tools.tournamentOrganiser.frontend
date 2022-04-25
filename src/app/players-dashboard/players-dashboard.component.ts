@@ -23,8 +23,8 @@ export class PlayersDashboardComponent implements OnInit {
 
   constructor(private playerService: PlayerService, private notifier: NotificationService) { }
 
-  public editPlayer: Player | undefined;
-  public deletePlayer: Player | undefined;
+  public editPlayer: Player = new Player();
+  public deletePlayer: Player = new Player();
 
   ngOnInit(): void {
     this.getPlayers();
@@ -138,11 +138,11 @@ export class PlayersDashboardComponent implements OnInit {
       button.setAttribute('data-target', '#addPlayerModal');
     }
     if (mode === 'edit') {
-      this.editPlayer = player;
+      this.editPlayer = player as Player;
       button.setAttribute('data-target', '#updatePlayerModal');
     }
     if (mode === 'delete') {
-      this.deletePlayer = player;
+      this.deletePlayer = player as Player;
       button.setAttribute('data-target', '#deletePlayerModal');
     }
     container!.appendChild(button);
