@@ -7,6 +7,7 @@ import { AppState } from '../interface/app-state';
 import { CommonResponse } from '../interface/common-response';
 import { Team } from '../interface/team';
 import { NotificationService } from '../service/notification.service';
+import { faEdit, faTrash, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-teams-dashboard',
@@ -14,6 +15,11 @@ import { NotificationService } from '../service/notification.service';
   styleUrls: ['./teams-dashboard.component.css']
 })
 export class TeamsDashboardComponent implements OnInit {
+
+  // icons
+  public faEdit = faEdit;
+  public faTrash = faTrash;
+  public faUserPlus = faUserPlus;
 
   appState$!: Observable<AppState<CommonResponse>>;
   readonly DataState = DataState;

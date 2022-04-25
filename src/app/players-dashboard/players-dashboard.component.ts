@@ -7,6 +7,7 @@ import { CommonResponse } from '../interface/common-response';
 import { NotificationService } from '../service/notification.service';
 import { NgForm } from '@angular/forms';
 import { Player } from '../interface/team';
+import { faEdit, faTrash, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-players-dashboard',
@@ -14,6 +15,11 @@ import { Player } from '../interface/team';
   styleUrls: ['./players-dashboard.component.css']
 })
 export class PlayersDashboardComponent implements OnInit {
+
+  // icons
+  public faEdit = faEdit;
+  public faTrash = faTrash;
+  public faUserPlus = faUserPlus;
 
   appState$!: Observable<AppState<CommonResponse>>;
   readonly DataState = DataState;

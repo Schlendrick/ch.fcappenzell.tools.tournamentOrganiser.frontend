@@ -9,9 +9,9 @@ import { NotificationModule } from './notification/notification.module';
 import { MailImporterComponent } from './mail-importer/mail-importer.component';
 import { TeamsDashboardComponent } from './teams-dashboard/teams-dashboard.component';
 import { DndDirective } from './direcitves/dnd.direcitves';
-import { ProgressComponent } from './components/progress/progress.component';
 import { PlayersDashboardComponent } from './players-dashboard/players-dashboard.component'
 import { CustomDatePipe } from './pipe/custom-date.pipe';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -19,7 +19,6 @@ import { CustomDatePipe } from './pipe/custom-date.pipe';
     TeamsDashboardComponent,
     MailImporterComponent,
     DndDirective,
-    ProgressComponent,
     PlayersDashboardComponent,
     CustomDatePipe
   ],
@@ -29,7 +28,8 @@ import { CustomDatePipe } from './pipe/custom-date.pipe';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NotificationModule
+    NotificationModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

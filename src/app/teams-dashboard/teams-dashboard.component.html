@@ -8,8 +8,9 @@
                         <h2>Manage Teams</h2>
                     </div>
                     <div class="col-sm-4">
-                        <button (click)="onOpenModal(undefined, 'add')" class="btn btn-success my-2 my-sm-0"><i
-                                class="fa fa-user-plus"></i> Team</button>
+                        <button (click)="onOpenModal(undefined, 'add')" class="btn btn-success my-2 my-sm-0">
+                            <fa-icon [icon]="faUserPlus"></fa-icon> Team
+                        </button>
                     </div>
                 </div>
             </div>
@@ -47,12 +48,14 @@
                                 <td>{{ team.captain.place }} </td>
                                 <td>
 
-                                    <a (click)="onOpenModal(team, 'delete')" class="delete" style="cursor: pointer;"><i
-                                            class="fa fa-trash" data-toggle="tooltip"
-                                            title="Delete">&nbsp;&nbsp;&nbsp;</i></a>
+                                    <a (click)="onOpenModal(team, 'delete')" class="delete" style="cursor: pointer;">
+                                        <fa-icon [icon]="faTrash" data-toggle="tooltip" title="Delete"></fa-icon>
+                                        &nbsp;&nbsp;
+                                    </a>
 
-                                    <a (click)="onOpenModal(team, 'edit')" class="delete" style="cursor: pointer;"><i
-                                            class="fa fa-edit" data-toggle="tooltip" title="Edit"></i></a>
+                                    <a (click)="onOpenModal(team, 'edit')" class="delete" style="cursor: pointer;">
+                                        <fa-icon [icon]="faEdit" data-toggle="tooltip" title="Edit"></fa-icon>
+                                    </a>
                                 </td>
                         </tbody>
                     </table>

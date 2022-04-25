@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef } from "@angular/core";
+import { faUpload, faFile, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { RTFJS } from "rtf.js";
 import { Captain, Player, Team } from "../interface/team";
-import { TeamsDashboardComponent } from "../teams-dashboard/teams-dashboard.component";
 
 @Component({
   selector: 'app-mail-importer',
@@ -9,6 +9,11 @@ import { TeamsDashboardComponent } from "../teams-dashboard/teams-dashboard.comp
   styleUrls: ['./mail-importer.component.scss']
 })
 export class MailImporterComponent {
+
+  public faFile = faFile;
+  public faUpload = faUpload;
+  public faTrashCan = faTrashCan;
+
   @ViewChild("fileDropRef", { static: false })
   fileDropEl!: ElementRef;
 
