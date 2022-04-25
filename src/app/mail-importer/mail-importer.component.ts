@@ -117,7 +117,7 @@ export class MailImporterComponent {
    */
   prepareFilesList(files: Array<any>) {
     for (const item of files) {
-      item.progress = 0;
+      item.sizeFormatted = this.formatBytes(item.size);
       this.files.push(item);
     }
     this.fileDropEl.nativeElement.value = "";

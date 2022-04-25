@@ -6,22 +6,35 @@
   <label for="fileDropRef">Browse for file</label>
 </div>
 
-<table class="table table-striped table-hover" id="files-list">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Size</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody *ngFor="let file of files; let i = index">
-    <tr>
-      <td>{{ file?.name }}</td>
-      <td>{{ file?.size }}</td>
-      <td>
-        <a (click)="deleteFile(i)" style="cursor: pointer;">
-          <fa-icon [icon]="faTrashCan"></fa-icon>
-        </a>
-      </td>
-  </tbody>
-</table>
+<div class="container-xl">
+  <div class="table-responsive">
+    <div class="table-wrapper">
+      <div class="table-title" id="main-container">
+      </div>
+      <table class="table table-striped table-hover" id="files-list">
+        <thead>
+          <tr>
+            <th>Size</th>
+            <th>Type</th>
+            <th>Name</th>
+            <th>Actions</th>
+
+          </tr>
+        </thead>
+        <tbody *ngFor="let file of files; let i = index">
+          <tr>
+            <td>{{ file?.sizeFormatted }}</td>
+            <td>{{ file?.type }}</td>
+            <td>{{ file?.name }}</td>
+            <td>
+              <a (click)="deleteFile(i)" style="cursor: pointer;">
+                <fa-icon [icon]="faTrashCan"></fa-icon>
+              </a>
+            </td>
+        </tbody>
+      </table>
+
+
+    </div>
+  </div>
+</div>
