@@ -49,66 +49,89 @@ export class MailImporterComponent {
    * Simulate the upload process
    */
   uploadFilesSimulator(index: number) {
-    setTimeout(() => {
-      if (index === this.files.length) {
-        return;
-      } else {
-        const progressInterval = setInterval(() => {
-          if (this.files[index].progress === 100) {
-            this.files[index].text("UTF-8").then((rtf: any) => {
-              const blob = this.stringToArrayBuffer(rtf);
-              RTFJS.loggingEnabled(false);
-              const doc = new RTFJS.Document(blob, rtf);
-              const meta = doc.metadata();
-              doc.render().then(function (htmlElements) {
-                console.log("Meta:");
-                console.log(meta);
-                console.log("Html:");
-                htmlElements.forEach(ele => {
-                  //console.log(ele.innerText);
-                })
+    if (index === this.files.length) {
+      return;
+    } else {
 
-                var team: Team = new Team();
-                team.players = new Array<Player>();
 
-                htmlElements
-                  .forEach((a, index) => {
-                    for (let i = 1; i <= 8; i++) {
-                      if (a.textContent!.includes("Spieler " + i + ":")) {
-                        console.log("Spieler " + i + ":");
+      this.files[index].text("UTF-8").then((rtf: any) => {
+        const blob = this.stringToArrayBuffer(rtf);
+        RTFJS.loggingEnabled(false);
+        const doc = new RTFJS.Document(blob, rtf);
+        const meta = doc.metadata();
+        doc.render().then(function (htmlElements) {
 
-                        var player: Player = new Player();
+          var team: Team = new Team();
+          team.players = new Array<Player>();
 
-                        if (i == 1) {
-                          index -= 1;
-                          console.log("Name: " + htmlElements[index + 1].innerText.replace(/\u2028/g, '').replace('Spieler 1:Name: ', ''));
-                        } else {
-                          console.log("Name: " + htmlElements[index + 1].innerText.replace('Name: ', ''));
-                          player.firstName = htmlElements[index + 1].innerText.replace('Name: ', '');
-                        }
-                        console.log("Vorname: " + htmlElements[index + 2].innerText.replace('Vorname: ', ''))
-                        player.lastName = htmlElements[index + 2].innerText.replace('Vorname: ', '');
-                        console.log(player);
-                        console.log("Geburtsdatum: " + htmlElements[index + 3].innerText.replace('Geburtsdatum: ', ''))
-                        console.log("Fussballer: " + htmlElements[index + 4].innerText.replace('Fussballer:', '').trim())
+          htmlElements.forEach((a, index) => {
+            for (let i = 1; i <= 8; i++) {
 
-                        team.players.push(player);
+              /*
+              Mannschaftsname: contreva
+              */
+              if (a.textContent!.includes('Mannschaftsname: ')) {
+                team.name = htmlElements[index].innerText.replace('Mannschaftsname: ', '');
+              }
 
-                      }
+              /*
+              Kategorie: FB
+              */
+              if (a.textContent!.includes('Kategorie: ')) {
+                team.category = htmlElements[index].innerText.replace('Kategorie: ', '');
+              }
 
-                    }
-                  })
-                console.log(team.players);
-              }).catch((error: any) => console.error(error))
-            });
-            clearInterval(progressInterval);
-            this.uploadFilesSimulator(index + 1);
-          } else {
-            this.files[index].progress += 5;
-          }
-        }, 200);
-      }
-    }, 10);
+              /*
+              Captain:
+              Anrede: Herr
+              Name: Hörler
+              Vorname: Bruno
+              Strasse: Pöppelstrasse 20
+              PLZ / Ort: 9050 Appenzell Steinegg
+              Telefon: 071 788 10 70
+              E-Mail: bruno.hoerler@contreva.ai
+              */
+              if (a.textContent!.includes('Captain:')) {
+                team.captain = new Captain();
+                team.captain.title = htmlElements[index + 1].innerText.replace('Anrede: ', '');
+                team.captain.firstName = htmlElements[index + 2].innerText.replace('Name: ', '');
+                team.captain.lastName = htmlElements[index + 3].innerText.replace('Vorname: ', '');
+                team.captain.street = htmlElements[index + 4].innerText.replace('Strasse: ', '');
+                const [first, ...rest] = htmlElements[index + 5].innerText.replace('PLZ / Ort: ', '').split(' ');
+                team.captain.plz = parseInt(first);
+                team.captain.place = rest.join(' ');
+                team.captain.phone = htmlElements[index + 6].innerText.replace('Telefon: ', '');
+                team.captain.email = htmlElements[index + 7].innerText.replace('E-Mail: ', '');
+              }
+
+              /*
+              Spieler 3:
+              Name: Müller
+              Vorname: Tamara
+              Geburtsdatum: 02.06.1995
+              Fussballer: ja
+              */
+              if (a.textContent!.includes("Spieler " + i + ":")) {
+                var player: Player = new Player();
+                player.firstName = htmlElements[index + 1].innerText.replace('Name: ', '');
+                player.lastName = htmlElements[index + 2].innerText.replace('Vorname: ', '');
+                const [DD, MM, YYYY] = htmlElements[index + 3].innerText.replace('Geburtsdatum: ', '').split('.')
+                player.birthday = new Date(YYYY + "-" + MM + "-" + DD);
+                player.clubPlayer = htmlElements[index + 4].innerText.replace('Fussballer: ', '') == "ja";
+                team.players.push(player);
+              }
+
+            }
+          })
+          console.log(team);
+
+        }).catch((error: any) => console.error(error))
+
+      });
+
+      this.uploadFilesSimulator(index + 1);
+
+    }
   }
 
   /**
