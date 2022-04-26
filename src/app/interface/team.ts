@@ -52,7 +52,7 @@ export interface IPlayer {
 
 export class Player implements IPlayer {
     id!: number;
-    title!: string;
+    title: string = "Herr"
     firstName!: string;
     lastName!: string;
     birthday!: Date;
