@@ -12,6 +12,8 @@ import { DndDirective } from './direcitves/dnd.direcitves';
 import { PlayersDashboardComponent } from './players-dashboard/players-dashboard.component'
 import { CustomDatePipe } from './pipe/custom-date.pipe';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { PlanerComponent } from './planer/planer.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     MailImporterComponent,
     DndDirective,
     PlayersDashboardComponent,
-    CustomDatePipe
+    CustomDatePipe,
+    PlanerComponent
   ],
   imports: [
     AppRoutingModule,
@@ -29,7 +32,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     ReactiveFormsModule,
     HttpClientModule,
     NotificationModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    DragDropModule
   ],
   providers: [],
   bootstrap: [AppComponent]
