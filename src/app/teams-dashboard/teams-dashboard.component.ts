@@ -8,6 +8,8 @@ import { CommonResponse } from '../interface/common-response';
 import { Team } from '../interface/team';
 import { NotificationService } from '../service/notification.service';
 import { faEdit, faFileImport, faTrash, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { parseEml, readEml, GBKUTF8, decode } from 'eml-parse-js';
+
 
 @Component({
   selector: 'app-teams-dashboard',
@@ -80,18 +82,19 @@ export class TeamsDashboardComponent implements OnInit {
 
 
   public onFileChange(event: any) {
-    let reader = new FileReader();
-
     if (event.target.files && event.target.files.length) {
       this.draggedFiles = Array.from(event.target.files);
 
 
       console.log(this.draggedFiles);
-      /*
-      reader.readAsDataURL(file);
 
-      reader.onload = () => console.log(reader.result);
-      */
+      this.draggedFiles[0].text().then((eml: string) => {
+        readEml(eml, (err, ReadedEmlJson) => {
+          console.log(ReadedEmlJson);
+        });
+      })
+
+
 
       // need to run CD since file load runs outside of zone
 
