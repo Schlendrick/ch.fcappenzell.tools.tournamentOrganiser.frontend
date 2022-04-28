@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { BehaviorSubject, catchError, map, Observable, of, startWith } from 'rxjs';
+import { BehaviorSubject, catchError, ConnectableObservable, map, Observable, of, startWith } from 'rxjs';
 import { TeamService } from '../service/team.service';
 import { DataState } from '../enum/data-state.enum';
 import { AppState } from '../interface/app-state';
 import { CommonResponse } from '../interface/common-response';
 import { Team } from '../interface/team';
 import { NotificationService } from '../service/notification.service';
-import { faEdit, faTrash, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faFileImport, faTrash, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-teams-dashboard',
@@ -20,6 +20,9 @@ export class TeamsDashboardComponent implements OnInit {
   public faEdit = faEdit;
   public faTrash = faTrash;
   public faUserPlus = faUserPlus;
+  public faFileImport = faFileImport;
+
+  public draggedFiles: Array<File> = [];
 
   appState$!: Observable<AppState<CommonResponse>>;
   readonly DataState = DataState;
@@ -74,6 +77,32 @@ export class TeamsDashboardComponent implements OnInit {
         })
       );
   }
+
+
+  public onFileChange(event: any) {
+    let reader = new FileReader();
+
+    if (event.target.files && event.target.files.length) {
+      this.draggedFiles = Array.from(event.target.files);
+
+
+      console.log(this.draggedFiles);
+      /*
+      reader.readAsDataURL(file);
+
+      reader.onload = () => console.log(reader.result);
+      */
+
+      // need to run CD since file load runs outside of zone
+
+    };
+  }
+
+  public deleteFile(index: number) {
+    this.draggedFiles.splice(index, 1);
+  }
+
+
 
   public onUpdateTeam(f: NgForm) {
 
@@ -136,6 +165,9 @@ export class TeamsDashboardComponent implements OnInit {
     button.setAttribute('data-toggle', 'modal');
     if (mode === 'add') {
       button.setAttribute('data-target', '#addTeamModal');
+    }
+    if (mode === 'import') {
+      button.setAttribute('data-target', '#importTeamsModal');
     }
     if (mode === 'edit') {
       this.editTeam = team;
