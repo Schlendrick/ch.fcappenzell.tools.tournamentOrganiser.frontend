@@ -162,8 +162,11 @@
                                 <div class="col-sm">
                                     <div class="form-group">
                                         <label for="title">Title</label>
-                                        <input type="text" ngModel="{{editTeam?.captain?.title}}" name="title"
+                                        <select class="form-control" ngModel="{{editTeam?.captain?.title}}" name="title"
                                             class="form-control" id="title" placeholder="Title">
+                                            <option>Herr</option>
+                                            <option>Frau</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-sm">
@@ -233,8 +236,11 @@
 
                                 <div class="row">
                                     <div class="col-2">
-                                        <input type="text" [(ngModel)]="player.title" name="title" class="form-control"
-                                            id="title+{{i}}" placeholder="Title">
+                                        <select class="form-control" ngModel="{{player.title}}" name="title"
+                                            class="form-control" id="title+{{i}}" placeholder="Title">
+                                            <option>Herr</option>
+                                            <option>Frau</option>
+                                        </select>
                                     </div>
                                     <div class="col-3">
                                         <input type="text" [(ngModel)]="player.firstName" name="firstName"
@@ -245,12 +251,12 @@
                                             class="form-control" id="lastName+{{i}}" placeholder="Last Name">
                                     </div>
                                     <div class="col-3">
-                                        <input type="text" [(ngModel)]="player.birthday" name="birthday"
+                                        <input type="text" ngModel="{{player.birthday | customDate}}" name="birthday"
                                             class="form-control" id="birthday+{{i}}" placeholder="yyyy-mm-dd">
                                     </div>
                                     <div class="col-1">
                                         <input type="checkbox" [(ngModel)]="player.clubPlayer" name="clubPlayer"
-                                            class="form-check-input" id="clubPlayer+{{i}}" placeholder="yyyy-mm-dd">
+                                            class="form-check-input" id="clubPlayer" placeholder="false">
                                     </div>
                                 </div>
                             </div>
