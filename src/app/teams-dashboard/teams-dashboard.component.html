@@ -120,9 +120,9 @@
 </div>
 
 <!-- Edit Modal -->
-<div class="modal fade" id="updateTeamModal" tabindex="-1" role="dialog" aria-labelledby="teamEditModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade bd-example-modal-lg" id="updateTeamModal" tabindex="-1" role="dialog"
+    aria-labelledby="teamEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="updateTeamModalLabel">Edit Team {{editTeam?.name}}</h5>
@@ -136,25 +136,131 @@
                     <input type="hidden" ngModel="{{editTeam?.id}}" name="id" class="form-control" id="id"
                         placeholder="Email">
 
-                    <div class="form-group">
-                        <label for="category">Name</label>
-                        <input type="text" ngModel="{{editTeam?.category}}" name="category" class="form-control"
-                            id="category" placeholder="Category">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="form-group">
+                                    <label for="category">Category</label>
+                                    <input type="text" ngModel="{{editTeam?.category}}" name="category"
+                                        class="form-control" id="category" placeholder="Category">
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" ngModel="{{editTeam?.name}}" name="name" class="form-control"
+                                        id="name" placeholder="Name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container" ngModelGroup="captain" #nameCtrl="ngModelGroup">
+
+                            <input type="hidden" ngModel="{{editTeam?.captain?.id}}" name="id" class="form-control"
+                                id="id">
+
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div class="form-group">
+                                        <label for="title">Title</label>
+                                        <input type="text" ngModel="{{editTeam?.captain?.title}}" name="title"
+                                            class="form-control" id="title" placeholder="Title">
+                                    </div>
+                                </div>
+                                <div class="col-sm">
+                                    <div class="form-group">
+                                        <label for="captainFirstName">First Name </label>
+                                        <input type="text" ngModel="{{editTeam?.captain?.firstName}}" name="firstName"
+                                            class="form-control" id="captainFirstName" placeholder="Captain">
+                                    </div>
+                                </div>
+                                <div class="col-sm">
+                                    <div class="form-group">
+                                        <label for="captainLastName">Last Name</label>
+                                        <input type="text" ngModel="{{editTeam?.captain?.lastName}}" name="lastName"
+                                            class="form-control" id="captainLastName" placeholder="Last name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div class="form-group">
+                                        <label for="street">Street</label>
+                                        <input type="text" ngModel="{{editTeam?.captain?.street}}" name="street"
+                                            class="form-control" id="street" placeholder="Street">
+                                    </div>
+                                </div>
+                                <div class="col-sm">
+                                    <div class="form-group">
+                                        <label for="plz">PLZ</label>
+                                        <input type="text" ngModel="{{editTeam?.captain?.plz}}" name="plz"
+                                            class="form-control" id="plz" placeholder="9050">
+                                    </div>
+                                </div>
+                                <div class="col-sm">
+                                    <div class="form-group">
+                                        <label for="place">Place</label>
+                                        <input type="text" ngModel="{{editTeam?.captain?.place}}" name="place"
+                                            class="form-control" id="place" placeholder="Place">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="text" ngModel="{{editTeam?.captain?.email}}" name="email"
+                                            class="form-control" id="email" placeholder="Email">
+                                    </div>
+                                </div>
+                                <div class="col-sm">
+                                    <div class="form-group">
+                                        <label for="phone">Phone</label>
+                                        <input type="text" ngModel="{{editTeam?.captain?.phone}}" name="phone"
+                                            class="form-control" id="phone" placeholder="Phone">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" ngModel="{{editTeam?.name}}" name="name" class="form-control" id="name"
-                            placeholder="Name">
-                    </div>
-                    <div class="form-group">
-                        <label for="captain">Captain</label>
-                        <input type="text" ngModel="{{editTeam?.captain?.firstName}}" name="lastName"
-                            class="form-control" id="captain" placeholder="Captain">
+                        <label for="playerGroup">Players</label>
+
+                        <div class="container" id="playerGroup" *ngFor="let player of editTeam?.players; let i = index">
+                            <div class="form-group" ngModelGroup="player[{{i}}]" #nameCtrl="ngModelGroup">
+
+                                <input type="hidden" [(ngModel)]="player.id" name="id" class="form-control" id="id">
+
+                                <div class="row">
+                                    <div class="col-2">
+                                        <input type="text" [(ngModel)]="player.title" name="title" class="form-control"
+                                            id="title+{{i}}" placeholder="Title">
+                                    </div>
+                                    <div class="col-3">
+                                        <input type="text" [(ngModel)]="player.firstName" name="firstName"
+                                            class="form-control" id="firstName+{{i}}" placeholder="First Name">
+                                    </div>
+                                    <div class="col-3">
+                                        <input type="text" [(ngModel)]="player.lastName" name="lastName"
+                                            class="form-control" id="lastName+{{i}}" placeholder="Last Name">
+                                    </div>
+                                    <div class="col-3">
+                                        <input type="text" [(ngModel)]="player.birthday" name="birthday"
+                                            class="form-control" id="birthday+{{i}}" placeholder="yyyy-mm-dd">
+                                    </div>
+                                    <div class="col-1">
+                                        <input type="checkbox" [(ngModel)]="player.clubPlayer" name="clubPlayer"
+                                            class="form-check-input" id="clubPlayer+{{i}}" placeholder="yyyy-mm-dd">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
 
                     <div class="modal-footer">
                         <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
-                        <button (click)="onUpdateTeam(editForm.value)" data-dismiss="modal" class="btn btn-primary">Save
+                        <button (click)="onUpdateTeam(editForm)" data-dismiss="modal" class="btn btn-primary">Save
                             changes</button>
                     </div>
                 </form>

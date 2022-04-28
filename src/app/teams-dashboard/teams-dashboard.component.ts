@@ -75,9 +75,21 @@ export class TeamsDashboardComponent implements OnInit {
       );
   }
 
-  public onUpdateTeam(team: Team): void {
+  public onUpdateTeam(f: NgForm) {
+
+    var players = [];
+    for (var prop in f.value) {
+      if (prop.includes('player')) {
+        players.push(f.value[prop]);
+        delete f.value[prop];
+      }
+    }
+    f.value["players"] = players;
+
+    console.log(f.value);
+
     this.isLoading.next(true);
-    this.appState$ = this.teamService.update$(team)
+    this.appState$ = this.teamService.update$(f.value as Team)
       .pipe(
         map(response => {
           const index = this.dataSubject.value.data.teams?.findIndex(team => team.id === response.data.team?.id);
