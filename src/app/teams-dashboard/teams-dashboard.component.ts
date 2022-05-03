@@ -5,11 +5,10 @@ import { TeamService } from '../service/team.service';
 import { DataState } from '../enum/data-state.enum';
 import { AppState } from '../interface/app-state';
 import { CommonResponse } from '../interface/common-response';
-import { Team } from '../interface/team';
+import { Captain, Player, Team } from '../interface/team';
 import { NotificationService } from '../service/notification.service';
 import { faEdit, faFileImport, faTrash, faUserPlus } from '@fortawesome/free-solid-svg-icons';
-import { parseEml, readEml, GBKUTF8, decode } from 'eml-parse-js';
-
+import { readEml } from 'eml-parse-js';
 
 @Component({
   selector: 'app-teams-dashboard',
@@ -37,6 +36,7 @@ export class TeamsDashboardComponent implements OnInit {
   public teams: Team[] | undefined;
   public editTeam: Team | undefined;
   public deleteTeam: Team | undefined;
+  public validatedTeams: Team[] = [];
 
   ngOnInit(): void {
     this.getTeams();
@@ -85,26 +85,98 @@ export class TeamsDashboardComponent implements OnInit {
     if (event.target.files && event.target.files.length) {
       this.draggedFiles = Array.from(event.target.files);
 
-
       console.log(this.draggedFiles);
 
-      this.draggedFiles[0].text().then((eml: string) => {
-        readEml(eml, (err, ReadedEmlJson) => {
-          console.log(ReadedEmlJson);
-        });
+      this.draggedFiles.forEach(file => {
+        file.text().then((eml: string) => {
+          readEml(eml, (err, ReadedEmlJson) => {
+
+            let text = ReadedEmlJson!.text
+
+            if (text != null) {
+              let team = new Team();
+              team.name = this.regexer(/(?<=Mannschaftsname+[:]\s+)\S.*\S(?=\s*)/, text);
+              team.category = this.regexer(/(?<=Kategorie:\s).*\S/, text);
+
+              let captain = new Captain()
+              captain.title = this.regexer(/(?<=Anrede+[:]\s*)\S.*\S(?=\s*(\r|\n))/, text);
+              captain.firstName = this.regexer(/(?<=Captain:\s*\S.*\S\s*\s*\S.*\S\s*.*\S\s*Vorname:\s)\S.*\S/, text);
+              captain.lastName = this.regexer(/(?<=Captain:\s*\S.*\S\s*\s*\S.*\S\s*.*\S\s*Name:\s)\S.*\S/, text);
+              captain.street = this.regexer(/(?<=Strasse+[:]\s*)\S.*\S(?=\s*(\r|\n))/, text);
+              //captain.plz = this.regexer(//, text);
+              captain.plz = Number(this.regexer(/(?<=Ort+[:]\s*)\S.*\S(?=\s*(\r|\n))/, text).split(' ')[0]);
+              captain.place = this.regexer(/(?<=Ort+[:]\s*)\S.*\S(?=\s*(\r|\n))/, text).split(' ')[1];
+              captain.email = this.regexer(/(?<=E-Mail+[:]\s*)\S.*\S(?=\s*(\r|\n))/, text).split(' ')[0];
+              captain.phone = this.regexer(/(?<=Telefon+[:]\s*)\S.*\S(?=\s*(\r|\n))/, text);
+              team.captain = captain;
+
+              team.players = [];
+              let regExFirstName = new RegExp(/(?<=Spieler \d:\s*\S.*\S\s*Vorname:\s*)\S.*\S/, "g");
+              let regExLastName = new RegExp(/(?<=Spieler \d:\s*Name:\s*)\S.*\S/, "g");
+              let regExBirthday = new RegExp(/(?<=Spieler \d:\s*\S.*\S\s*\s*\S.*\S\s*Geburtsdatum:\s*)\S.*\S/, "g");
+              let regExClubPlayer = new RegExp(/(?<=Spieler \d:\s*\S.*\S\s*\s*\S.*\S\s*.*\S\s*Fussballer:\s)\S.*\S/, "g");
+
+              while (true) {
+                let player = new Player();
+                //player.title
+                player.firstName = this.reggger(regExFirstName, text);
+                if (player.firstName === undefined) break;
+                player.lastName = this.reggger(regExLastName, text);
+                player.clubPlayer = this.reggger(regExClubPlayer, text) == "ja";
+                const [DD, MM, YYYY] = this.reggger(regExBirthday, text).split('.')
+                player.birthday = new Date(YYYY + "-" + MM + "-" + DD);
+                team.players.push(player);
+              }
+              console.log(team);
+
+              this.validatedTeams?.push(team);
+            }
+          })
+        })
       })
+    }
+  }
 
+  regexer(regex: RegExp, text: string): any {
+    let result = new RegExp(regex, "g").exec(text!);
+    if (result != null) {
+      return result[0];
+    }
+  }
 
-
-      // need to run CD since file load runs outside of zone
-
-    };
+  reggger(regex: RegExp, text: string): any {
+    let result = regex.exec(text!);
+    if (result != null) {
+      return result[0];
+    }
   }
 
   public deleteFile(index: number) {
     this.draggedFiles.splice(index, 1);
+    this.validatedTeams.splice(index, 1);
   }
 
+  public onImportTeams() {
+    this.validatedTeams.forEach(team => {
+      this.appState$ = this.teamService.create$(team)
+        .pipe(
+          map(response => {
+            this.dataSubject.next(
+              { ...response, data: { teams: [response.data.team!, ...this.dataSubject.value.data.teams!] } }
+            );
+            this.notifier.onDefault(response.message);
+            this.isLoading.next(false);
+            return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
+          }),
+          startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
+          catchError((error: string) => {
+            this.isLoading.next(false);
+            this.notifier.onError(error);
+            return of({ dataState: DataState.ERROR_STATE, error });
+          })
+        );
+    })
+  }
 
 
   public onUpdateTeam(f: NgForm) {
