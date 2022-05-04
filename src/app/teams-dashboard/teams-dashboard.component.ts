@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { BehaviorSubject, catchError, ConnectableObservable, map, Observable, of, startWith } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, startWith } from 'rxjs';
 import { TeamService } from '../service/team.service';
 import { DataState } from '../enum/data-state.enum';
 import { AppState } from '../interface/app-state';
@@ -97,6 +97,8 @@ export class TeamsDashboardComponent implements OnInit {
               let team = new Team();
               team.name = this.regexer(/(?<=Mannschaftsname+[:]\s+)\S.*\S(?=\s*)/, text);
               team.category = this.regexer(/(?<=Kategorie:\s).*\S/, text);
+              let comment = this.regexer(/(?<=allfällige Bemerkungen:\s).*\S/, text)
+              if (comment) { team.comment = comment; }
 
               let captain = new Captain()
               captain.title = this.regexer(/(?<=Anrede+[:]\s*)\S.*\S(?=\s*(\r|\n))/, text);
@@ -125,16 +127,24 @@ export class TeamsDashboardComponent implements OnInit {
                 player.clubPlayer = this.reggger(regExClubPlayer, text) == "ja";
                 const [DD, MM, YYYY] = this.reggger(regExBirthday, text).split('.')
                 player.birthday = new Date(YYYY + "-" + MM + "-" + DD);
+                if (this.isValidDate(player.birthday) == false) {
+                  player.birthday = new Date("2015-03-25");
+                }
                 team.players.push(player);
               }
               console.log(team);
 
               this.validatedTeams?.push(team);
+
             }
           })
         })
       })
     }
+  }
+
+  isValidDate(d: any) {
+    return d instanceof Date && !isNaN(Number(d));
   }
 
   regexer(regex: RegExp, text: string): any {
@@ -157,30 +167,29 @@ export class TeamsDashboardComponent implements OnInit {
   }
 
   public onImportTeams() {
-    this.validatedTeams.forEach(team => {
-      this.appState$ = this.teamService.create$(team)
-        .pipe(
-          map(response => {
+    this.appState$ = this.teamService.createTeams$(this.validatedTeams)
+      .pipe(
+        map(response => {
+          response.data.teams?.forEach(team => {
             this.dataSubject.next(
-              { ...response, data: { teams: [response.data.team!, ...this.dataSubject.value.data.teams!] } }
+              { ...response, data: { teams: [team!, ...this.dataSubject.value.data.teams!] } }
             );
-            this.notifier.onDefault(response.message);
-            this.isLoading.next(false);
-            return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
-          }),
-          startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
-          catchError((error: string) => {
-            this.isLoading.next(false);
-            this.notifier.onError(error);
-            return of({ dataState: DataState.ERROR_STATE, error });
           })
-        );
-    })
+          this.notifier.onDefault(response.message);
+          this.isLoading.next(false);
+          return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
+        }),
+        startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
+        catchError((error: string) => {
+          this.isLoading.next(false);
+          this.notifier.onError(error);
+          return of({ dataState: DataState.ERROR_STATE, error });
+        })
+      );
   }
 
 
   public onUpdateTeam(f: NgForm) {
-
     var players = [];
     for (var prop in f.value) {
       if (prop.includes('player')) {
@@ -189,9 +198,6 @@ export class TeamsDashboardComponent implements OnInit {
       }
     }
     f.value["players"] = players;
-
-    console.log(f.value);
-
     this.isLoading.next(true);
     this.appState$ = this.teamService.update$(f.value as Team)
       .pipe(
@@ -216,10 +222,7 @@ export class TeamsDashboardComponent implements OnInit {
       .pipe(
         map(response => {
           this.dataSubject.next(
-            {
-              ...response, data:
-                { teams: this.dataSubject.value.data.teams!.filter(s => s.id !== team!.id) }
-            }
+            { ...response, data: { teams: this.dataSubject.value.data.teams!.filter(s => s.id !== team!.id) } }
           );
           this.notifier.onDefault(response.message);
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }

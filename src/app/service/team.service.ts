@@ -27,6 +27,13 @@ export class TeamService {
         catchError(this.handleError)
       );
 
+  createTeams$ = (teams: Team[]) => <Observable<CommonResponse>>
+    this.http.post<CommonResponse>(`${this.apiServerUrl}/teams/createTeams`, teams)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
   update$ = (team: Team) => <Observable<CommonResponse>>
     this.http.post<CommonResponse>(`${this.apiServerUrl}/teams/update`, team)
       .pipe(

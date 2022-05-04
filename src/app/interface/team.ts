@@ -4,6 +4,7 @@ export interface ITeam {
     category: string;
     captain: ICaptain;
     players: Array<IPlayer>;
+    comment: string;
     uuid: string;
 }
 
@@ -13,6 +14,7 @@ export class Team implements ITeam {
     category!: string;
     captain!: ICaptain;
     players!: Array<IPlayer>;
+    comment!: string;
     uuid!: string;
 }
 
